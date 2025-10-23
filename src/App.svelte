@@ -92,7 +92,7 @@
 <div class="container">
     {#if shifted.length > 0}
         <Canvas
-            height={13 * (ledRadius * 2 + ledGap)}
+            height={25 * (ledRadius * 2 + ledGap)}
             width={shifted.length * (ledRadius * 2 + ledGap)}
         >
             {#each { length: shifted[0].length }, y}
