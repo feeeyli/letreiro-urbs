@@ -4,10 +4,3 @@
     box-sizing: border-box;
     font-family: sans-serif;
 }
-
-#app {
-    height: 100vh;
-    width: 100vw;
-    background-color: #cb2e1f;
-    padding: 12px;
-}

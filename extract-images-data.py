@@ -33,15 +33,31 @@ def image_to_indexed_array(image_path, color_palette):
 
     return indexed_array
 
-
-def find_images(base_dir):
+def find_images(base_dir="images"):
+    """Busca recursivamente todas as imagens em uma pasta, ordenadas alfabeticamente."""
+    valid_ext = (".png", ".jpg", ".jpeg", ".bmp", ".gif")
     found_images = []
 
     for root, dirs, files in os.walk(base_dir):
+        dirs.sort()   # 🔤 Ordena pastas alfabeticamente
+        files = sorted(files, key=str.lower)  # 🔤 Ordena arquivos alfabeticamente
         for f in files:
-            if f.lower().endswith(".png"):
+            if f.lower().endswith(valid_ext):
                 found_images.append(os.path.join(root, f))
+
+    # 🔤 Ordena a lista final de caminhos (garantia extra)
+    found_images.sort(key=lambda p: p.lower())
     return found_images
+
+
+# def find_images(base_dir):
+#     found_images = []
+
+#     for root, dirs, files in os.walk(base_dir):
+#         for f in files:
+#             if f.lower().endswith((".png", ".jpg")):
+#                 found_images.append(os.path.join(root, f))
+#     return found_images
 
 
 def extract_images_data(base_dir, output_file):

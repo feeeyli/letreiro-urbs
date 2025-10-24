@@ -3,16 +3,22 @@
     import Led from "./components/Led.svelte";
     import { onMount } from "svelte";
     import DATA from "./lib/data.json";
-    import { COLOR_PALETTE, LED_GAP, LED_RADIUS } from "./lib/contants";
+    import {
+        BG_COLORS,
+        COLOR_PALETTE,
+        LED_GAP,
+        LED_RADIUS,
+    } from "./lib/contants";
 
     type Display = {
         name: string;
         data: number[][];
     };
 
-    const entries = Object.entries(DATA).map((d) => d[1] as Display[]);
-    let displayIndex = $state(Math.floor(Math.random() * entries.length));
-    const displays = $derived(entries[displayIndex]);
+    const entries = Object.entries(DATA);
+    const displayList = entries.map((d) => d[1] as Display[]);
+    let displayIndex = $state(Math.floor(Math.random() * displayList.length));
+    const displays = $derived(displayList[displayIndex]);
 
     let index = 0;
     let clear: number;
@@ -76,12 +82,12 @@
             case "ArrowUp":
                 index = 0;
                 moveX = 0;
-                displayIndex = cycleIndex(entries, displayIndex);
+                displayIndex = cycleIndex(displayList, displayIndex);
                 break;
             case "ArrowDown":
                 index = 0;
                 moveX = 0;
-                displayIndex = cycleIndex(entries, displayIndex, -1);
+                displayIndex = cycleIndex(displayList, displayIndex, -1);
                 break;
         }
     }
@@ -89,34 +95,37 @@
 
 <svelte:window onkeydown={handleKeyDown} />
 
-<div class="container">
-    {#if shifted.length > 0}
-        <Canvas
-            height={25 * (ledRadius * 2 + ledGap)}
-            width={shifted.length * (ledRadius * 2 + ledGap)}
-        >
-            {#each { length: shifted[0].length }, y}
-                {#each { length: shifted.length }, x}
-                    <Led
-                        {x}
-                        {y}
-                        fill={COLOR_PALETTE[shifted[x][y]]}
-                        {ledRadius}
-                        {ledGap}
-                    />
+<main style:background-color={BG_COLORS[entries[displayIndex][0]]}>
+    <div class="container">
+        {#if shifted.length > 0}
+            <Canvas
+                height={13 * (ledRadius * 2 + ledGap)}
+                width={shifted.length * (ledRadius * 2 + ledGap)}
+            >
+                {#each { length: shifted[0].length }, y}
+                    {#each { length: shifted.length }, x}
+                        <Led
+                            {x}
+                            {y}
+                            fill={COLOR_PALETTE[shifted[x][y]]}
+                            {ledRadius}
+                            {ledGap}
+                        />
+                    {/each}
                 {/each}
-            {/each}
-        </Canvas>
-    {/if}
-    <p class="hint">
-        Use <strong>+</strong> ou <strong>-</strong> para mudar o tamanho dos
-        leds ({ledRadius}px); <br />
-        <strong>seta pra esquerda/direita</strong> para mudar o espaçamento ({ledGap}px)
-        <br />
-        e <strong>seta pra cima/baixo</strong> para trocar o display ({displayIndex +
-            1})
-    </p>
-</div>
+            </Canvas>
+        {/if}
+        <p class="hint">
+            Use <strong>+</strong> ou <strong>-</strong> para mudar o tamanho
+            dos leds ({ledRadius}px); <br />
+            <strong>seta pra esquerda/direita</strong> para mudar o espaçamento
+            ({ledGap}px)
+            <br />
+            e <strong>seta pra cima/baixo</strong> para trocar o display ({displayIndex +
+                1})
+        </p>
+    </div>
+</main>
 
 <style>
     .container {
@@ -146,5 +155,11 @@
         &:hover {
             opacity: 0.5;
         }
+    }
+
+    main {
+        height: 100vh;
+        width: 100vw;
+        padding: 12px;
     }
 </style>
